@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'recipe',
     'glocery',
-    'community'
+    'community',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -126,3 +127,8 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+DATE_INPUT_FORMATS = ['%d-%m-%Y']
+
+AUTH_USER_MODEL = 'users.CustomUser'
