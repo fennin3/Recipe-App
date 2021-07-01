@@ -17,7 +17,7 @@ class Category(models.Model):
 
 
 
-class Community(models.Model):
+class Post(models.Model):
     title = models.CharField(max_length=255)
     image = models.ImageField(upload_to="community_post/")
     author = models.ForeignKey(User, on_delete=models.CASCADE)

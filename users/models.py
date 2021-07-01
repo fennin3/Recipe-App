@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+
 # User = get_user_model()
 
 # addresses
@@ -52,9 +53,14 @@ class AdditionalInfo(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="more_info")
     referred_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="referrals")
 
+from recipe.models import Recipe
+from glocery.models import Glocery
+
 
 class PreOrderingCalender(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="calender", null=True, blank=True)
     item_type = models.CharField(max_length=50, null=True)
-    item_id = models.IntegerField()
+    # item_id = models.IntegerField()
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, null=True, blank=True)
+    glocery = models.ForeignKey(Glocery, on_delete=models.CASCADE, null=True, blank=True)
     date_to_order = models.DateField(auto_now_add=True)
