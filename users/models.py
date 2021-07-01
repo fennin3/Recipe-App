@@ -21,6 +21,7 @@ class CustomUser(AbstractUser):
     notifications = models.BooleanField(default=False)  # in app notifications
     email_news = models.BooleanField(default=False) # email and news letter
     special_offers = models.BooleanField(default=True)
+    email_verified = models.BooleanField(default=False)
     REQUIRED_FIELDS = []
 
 
@@ -64,3 +65,9 @@ class PreOrderingCalender(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, null=True, blank=True)
     glocery = models.ForeignKey(Glocery, on_delete=models.CASCADE, null=True, blank=True)
     date_to_order = models.DateField(auto_now_add=True)
+
+
+
+class OTPCode(models.Model):
+    code = models.CharField(max_length=7)
+    email = models.EmailField()
