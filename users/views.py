@@ -1,13 +1,20 @@
 from django.shortcuts import render
 from .serializers import CreateUserSerializer, UserLoginSerializer
 from rest_framework.views import APIView
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from rest_framework.response import Response
 from rest_framework import status
 from .utils import sending_mail, generate_OTP
 from .models import OTPCode
 
+from rest_framework_jwt.settings import api_settings
+from django.contrib.auth.models import update_last_login
+
+
 User = get_user_model()
+JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
+JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
+
 
 class CreateUserView(APIView):
     permission_classes=()
@@ -26,22 +33,26 @@ class CreateUserView(APIView):
         else:
             pass
 
-        user = User.objects.create(
-            email = email,
-            full_name=data.data['full_name'],
-            profile_pic = data.data['profile_pic'],
-            phone = data.data['phone'],
-            notifications = data.data['notifications'],
-            email_news = data.data['email_news'],
-            special_offers = data.data['special_offers'],
-            password = data.data['password'],
-            is_active=False
-        )
 
-        code = generate_OTP()
+        try:
+            code = generate_OTP()
+            sending_mail(f"Your email verification code is {code}", "Email Verification", email)
+            user = User.objects.create(
+                email = email,
+                full_name=data.data['full_name'],
+                profile_pic = data.data['profile_pic'],
+                phone = data.data['phone'],
+                notifications = data.data['notifications'],
+                email_news = data.data['email_news'],
+                special_offers = data.data['special_offers'],
+                password = data.data['password'],
+                is_active=False
+            )
+
+            
         
-        try: 
-            sending_mail(f"Your email verification code is {code}")
+         
+            
             otp = OTPCode.objects.create(code=code, email=email)
             otp.save()
             user.save()
@@ -51,11 +62,12 @@ class CreateUserView(APIView):
                 "message":"Account created successfully."
             }, status=status.HTTP_200_OK)
         except Exception as e:
+            print(e)
             return Response({
-                "status": status.HTTP_400_BAD_REQUEST,
-                "message":"Account created successfully."
-            }, status=status.HTTP_400_BAD_REQUEST)
 
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message":"Account creation unsuccessful."
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLoginView(APIView):
@@ -68,7 +80,27 @@ class UserLoginView(APIView):
         serializer.is_valid(raise_exception=True)
         print(serializer.data)
         email = serializer.data['email']
+        
+        password = serializer.data['password']
 
+        
+
+        user = authenticate(email=email, password=password)
+
+        if user is None:
+            return Response({
+                "status":status.HTTP_400_BAD_REQUEST,
+                "message":"A user with this email and password is not found."
+            }, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            payload = JWT_PAYLOAD_HANDLER(user)
+            jwt_token = JWT_ENCODE_HANDLER(payload)
+            update_last_login(None, user)
+        except User.DoesNotExist:
+            return Response({
+                "status":status.HTTP_400_BAD_REQUEST,
+                "message":"A user with this email and password is not found."
+            }, status=status.HTTP_400_BAD_REQUEST)
         user_ = User.objects.get(email=email)
 
         response = {

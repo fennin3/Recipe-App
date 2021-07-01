@@ -56,30 +56,30 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
 
-    def validate(self, data):
-        email_or_contact = data.get("email", None)
-        password = data.get("password", None)
+    # def validate(self, data):
+    #     email_or_contact = data.get("email", None)
+    #     password = data.get("password", None)
 
         
 
-        user = authenticate(email=email_or_contact, password=password)
+    #     user = authenticate(email=email_or_contact, password=password)
         
 
-        if user is None:
-            raise serializers.ValidationError(
-                'A user with this email/phone and password is not found.'
-            )
-        try:
-            payload = JWT_PAYLOAD_HANDLER(user)
-            jwt_token = JWT_ENCODE_HANDLER(payload)
-            update_last_login(None, user)
-        except User.DoesNotExist:
-            raise serializers.ValidationError(
-                'User with given email and password does not exists'
-            )
-        return {
-            'email':email_or_contact,
-            'username':user.username,
-            'token': jwt_token
-        }
+    #     if user is None:
+    #         raise serializers.ValidationError(
+    #             'A user with this email/phone and password is not found.'
+    #         )
+    #     try:
+    #         payload = JWT_PAYLOAD_HANDLER(user)
+    #         jwt_token = JWT_ENCODE_HANDLER(payload)
+    #         update_last_login(None, user)
+    #     except User.DoesNotExist:
+    #         raise serializers.ValidationError(
+    #             'User with given email and password does not exists'
+    #         )
+    #     return {
+    #         'email':email_or_contact,
+    #         'username':user.username,
+    #         'token': jwt_token
+    #     }
 
