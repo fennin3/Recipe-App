@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import django_heroku
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,9 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-6^4ca9$ml4l1c#36gkc*z3#8(h_(9efte_*(03byw4real%7rl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -190,4 +192,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 DATE_INPUT_FORMATS = ['%d-%m-%Y']
+
+django_heroku.settings(locals())
 
