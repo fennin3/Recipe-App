@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .serializers import CreateUserSerializer, UserLoginSerializer
 from rest_framework.views import APIView
-from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework import status
 from .utils import sending_mail, generate_OTP
@@ -45,9 +45,11 @@ class CreateUserView(APIView):
                 notifications = data.data['notifications'],
                 email_news = data.data['email_news'],
                 special_offers = data.data['special_offers'],
-                password = data.data['password'],
+                
                 is_active=False
             )
+
+            user.set_password(data.data['password'])
 
             
         
@@ -78,20 +80,23 @@ class UserLoginView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        print(serializer.data)
         email = serializer.data['email']
-        
         password = serializer.data['password']
-
         
+        try:
+            user = User.objects.get(email=email, password=password)
+        #     return Response({
+        #         "status":status.HTTP_400_BAD_REQUEST,
+        #         "message":"A user with this email and password is not found."
+        #     }, status=status.HTTP_400_BAD_REQUEST)
 
-        user = authenticate(email=email, password=password)
-
-        if user is None:
+        except Exception as e:
             return Response({
                 "status":status.HTTP_400_BAD_REQUEST,
                 "message":"A user with this email and password is not found."
             }, status=status.HTTP_400_BAD_REQUEST)
+
+
         try:
             payload = JWT_PAYLOAD_HANDLER(user)
             jwt_token = JWT_ENCODE_HANDLER(payload)
@@ -107,12 +112,12 @@ class UserLoginView(APIView):
             'success' : 'True',
             'status' : status.HTTP_200_OK,
             'message': 'User logged in  successfully',
-            'token' : serializer.data['token'],
+            'token' : jwt_token,
             'id':user_.id,
             'email':user_.email,
             # 'username':user_.username,
             'full_name':user_.full_name,
-            'profile_pic':user_.profile_pic,
+            # 'profile_pic':user_.profile_pic,
             'phone':user_.phone
             }
         status_code = status.HTTP_200_OK
