@@ -7,4 +7,5 @@ admin.site.register(PaymentMethods)
 admin.site.register(AdditionalInfo)
 admin.site.register(PreOrderingCalender)
 admin.site.register(CustomUser)
+admin.site.register(Language)
 

@@ -101,3 +101,87 @@ class RemoveSavedRecipe(APIView):
             "status":status.HTTP_200_OK,
             "message":"Recipe has been removed."
         })
+
+class AddReview(APIView):
+    permission_classes=()
+
+    def post(self, request):
+        data = AddReviewSerializer(request.data).data
+
+        user = User.objects.get(email=data['email'])
+        recipe = Recipe.objects.get(id=data['recipe_id'])
+
+        review = Review.objects.create(user=user, text=data['text'])
+        review.save()
+
+        recipe.reviews.add(review)
+        recipe.save()
+
+        return Response({
+            "status":status.HTTP_200_OK,
+            "message":"Review has been added successfully."
+        })
+
+
+class RateRecipe(APIView):
+    permission_classes=()
+
+    def post(self, request):
+        data = request.data
+
+        user = User.objects.get(email=data['email'])
+        recipe = Recipe.objects.get(id=data['recipe_id'])
+
+        if user in recipe.raters.all():
+            rating = recipe.all_ratings.get(user__id=user.id)
+            print()
+            rating.rate = data['rate']
+            rating.save()
+
+            return Response({
+                "status":status.HTTP_200_OK,
+                "message":"Thank you for rating this recipe."
+            })
+        
+        else:
+            # print(float(data['rate']))
+            rating = Rating.objects.create(user=user,rate=float(data['rate'])) 
+            rating.save()
+
+            recipe.all_ratings.add(rating)
+            recipe.raters.add(user)
+            recipe.raters_ids.add(user.id)
+
+            recipe.save()
+            return Response({
+                "status":status.HTTP_200_OK,
+                "message":"Thank you for rating this recipe."
+            })
+
+
+
+class AddChefTips(APIView):
+    permission_classes=()
+
+    def post(self, request):
+        data = AddTipSerializer(request.data).data
+
+        email = data['email']
+        user = User.objects.get(email=email)
+        recipe = Recipe.objects.get(id=data['recipe_id'])
+        text = data['text']
+
+        tip = Tip.objects.create(
+            user=user,
+            text=text
+        )
+        tip.save()
+
+
+        recipe.tips_from_chef.add(tip)
+        recipe.save()
+
+        return Response({
+            "status":status.HTTP_200_OK,
+            "message":"Thank you for the tip."
+        })

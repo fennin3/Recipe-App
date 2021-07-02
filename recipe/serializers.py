@@ -25,16 +25,26 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class TipSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
     class Meta:
         model=Tip
         fields="__all__"
 
 
+
+class RatingSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    class Meta:
+        model=Rating
+        fields="__all__"
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    raters = UserSerializer(read_only=True, many=True)
+    all_ratings = RatingSerializer(read_only=True, many=True)
     reviews = ReviewSerializer(many=True, read_only=True)
     tips_from_chef = TipSerializer(many=True,read_only=True)
+    avg_rate = serializers.ReadOnlyField(source='average_rate')
     class Meta:
         model=Recipe
         fields="__all__"
@@ -51,5 +61,25 @@ class SavedRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model=SavedRecipe
         fields="__all__"
+
+
+class AddReviewSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    recipe_id = serializers.IntegerField()
+    text = serializers.CharField()
+
+
+class AddRateSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    recipe_id = serializers.IntegerField()
+    rate = serializers.DecimalField(max_digits=3, decimal_places=2)
+
+class AddTipSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    recipe_id = serializers.IntegerField()
+    text = serializers.CharField()
+
+
+
 
 

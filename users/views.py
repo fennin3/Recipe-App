@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from .serializers import CreateUserSerializer, UserLoginSerializer
+from .serializers import CreateUserSerializer, LanguageSerializer, UserLoginSerializer
 from rest_framework.views import APIView
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework.response import Response
 from rest_framework import status
 from .utils import sending_mail, generate_OTP
-from .models import OTPCode
+from .models import OTPCode, Language
 
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import update_last_login
@@ -83,14 +83,14 @@ class UserLoginView(APIView):
         email = serializer.data['email']
         password = serializer.data['password']
         
-        try:
-            user = User.objects.get(email=email, password=password)
+        
+        user = authenticate(email=email, password=password)
         #     return Response({
         #         "status":status.HTTP_400_BAD_REQUEST,
         #         "message":"A user with this email and password is not found."
         #     }, status=status.HTTP_400_BAD_REQUEST)
 
-        except Exception as e:
+        if user is None:
             return Response({
                 "status":status.HTTP_400_BAD_REQUEST,
                 "message":"A user with this email and password is not found."
@@ -157,3 +157,60 @@ class VerifyEmailView(APIView):
                 "status":status.HTTP_400_BAD_REQUEST,
                 "message":"Invalid Code"
             }, status=status.HTTP_400_BAD_REQUEST)
+
+class SetNotitfications(APIView):
+    permission_classes=()
+
+    def put(self, request):
+        
+        email = request.data['email']
+        user = User.objects.get(email=email)
+        value = request.data['value']
+        value_for = request.data['value_for']
+
+        if value_for.lower() == "not":
+            user.notifications = value
+
+            user.save()
+        elif value_for.lower() == "news":
+            user.email_news = value
+
+            user.save()
+        else:
+            user.special_offers = value
+            user.save()
+        
+        return Response({
+            "status":status.HTTP_200_OK,
+            "message":"Changes has been made."
+        })
+
+
+class SetLanguage(APIView): 
+    permission_classes=()
+
+    def put(self, request):
+        email = request.data['email']
+        user = User.objects.get(email=email)
+
+        user.language = request.data['language']
+
+        user.save()
+
+        return Response({
+            "status":status.HTTP_200_OK,
+            "message":"Changes has been made."
+        })  
+
+class RetrieveAllLanguages(APIView):
+    permission_classes=()
+
+    def get(self, request):
+        lang = Language.objects.all()
+
+        langs = LanguageSerializer(lang, many=True)
+
+        return Response({
+            "status":status.HTTP_200_OK,
+            "data":langs.data
+        })

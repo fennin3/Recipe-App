@@ -20,7 +20,7 @@ class CustomUser(AbstractUser):
     points = models.IntegerField(default=0)
     notifications = models.BooleanField(default=False)  # in app notifications
     email_news = models.BooleanField(default=False) # email and news letter
-    special_offers = models.BooleanField(default=True)
+    special_offers = models.BooleanField(default=False)
     email_verified = models.BooleanField(default=False)
     REQUIRED_FIELDS = []
 
@@ -71,3 +71,8 @@ class PreOrderingCalender(models.Model):
 class OTPCode(models.Model):
     code = models.CharField(max_length=7)
     email = models.EmailField()
+
+class Language(models.Model):
+    title = models.CharField(max_length=50)
+    value = models.CharField(max_length=5)
+

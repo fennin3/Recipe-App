@@ -56,6 +56,12 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
 
+class LanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Language
+        fields="__all__"
+
+
     # def validate(self, data):
     #     email_or_contact = data.get("email", None)
     #     password = data.get("password", None)

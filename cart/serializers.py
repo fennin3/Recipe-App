@@ -1,3 +1,4 @@
+import re
 from rest_framework import  serializers
 from .models import OrderItem, Order
 from glocery.serializers import GlocerySerializer
@@ -16,3 +17,10 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model=Order
         fields="__all__"
+
+
+class OrderItemSerializer(serializers.Serializer):
+    type = serializers.CharField()
+    recipe_id = serializers.IntegerField(required=False)
+    glocery_id = serializers.IntegerField(required=False)
+    email=serializers.EmailField()
