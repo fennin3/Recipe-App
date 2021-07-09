@@ -9,7 +9,7 @@ from rest_framework import status
 
 
 class GetAllCategories(APIView):
-    permission_classes=()
+    
     def get(self, request):
         cat = GloceryCategory.objects.all()
         print(cat)
@@ -21,7 +21,7 @@ class GetAllCategories(APIView):
         }, status.HTTP_200_OK)
 
 class GetCategoryGloceries(APIView):
-    permission_classes=()
+    
 
     def get(self,request, id):
         cat = GloceryCategory.objects.get(id=id)
@@ -33,7 +33,7 @@ class GetCategoryGloceries(APIView):
         }, status=status.HTTP_200_OK)
 
 class GetAllGloceries(APIView):
-    permission_classes=()
+    
     def get(self, request):
         recipes = Glocery.objects.all()
 
@@ -45,7 +45,7 @@ class GetAllGloceries(APIView):
         }, status=status.HTTP_200_OK)
 
 class GetGloceryDetail(APIView):
-    permission_classes=()
+    
 
     def get(self, request, id):
         glo = Glocery.objects.get(id=id)
@@ -57,7 +57,7 @@ class GetGloceryDetail(APIView):
         })
 
 class SaveGlocery(APIView):
-    permission_classes=()
+    
     def post(self, request):
         data = SaveGlocerySerializer(data=request.data)
         data.is_valid(raise_exception=True)
@@ -86,7 +86,7 @@ class SaveGlocery(APIView):
             })
 
 class GetSavedGlocery(APIView):
-    permission_classes=()
+    
 
     def get(self, request, email):
         user = User.objects.get(email=email)
@@ -101,7 +101,7 @@ class GetSavedGlocery(APIView):
 
 
 class RemoveSavedGlocery(APIView):
-    permission_classes=()
+    
 
     def post(self, request, id):
         sr = SavedGlocery.objects.get(id=id)

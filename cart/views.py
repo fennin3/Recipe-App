@@ -7,7 +7,7 @@ from rest_framework import status
 
 
 class AddtoCart(APIView):
-    permission_classes=()
+    
 
     def post(self, request):
         data = OrderItemSerializer(request.data).data
@@ -80,7 +80,7 @@ class AddtoCart(APIView):
                     })
 
 class RemoveFromCart(APIView):
-    permission_classes=()
+    
 
     def post(self, request, id):
         item = OrderItem.objects.get(id=id)
@@ -100,7 +100,7 @@ class RemoveFromCart(APIView):
                     })
 
 class RemoveItemDirect(APIView):
-    permission_classes=()
+    
 
     def post(self, request, id):
         item = OrderItem.objects.get(id=id)

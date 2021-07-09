@@ -9,7 +9,7 @@ from rest_framework import status
 
 
 class GetAllCategories(APIView):
-    permission_classes=()
+    
     def get(self, request):
         cat = Category.objects.all()
         cat = CategorySerializer(cat, many=True)
@@ -19,7 +19,7 @@ class GetAllCategories(APIView):
         }, status.HTTP_200_OK)
 
 class GetCategoryRecipes(APIView):
-    permission_classes=()
+    
 
     def get(self,request, id):
         cat = Category.objects.get(id=id)
@@ -31,7 +31,7 @@ class GetCategoryRecipes(APIView):
         }, status=status.HTTP_200_OK)
 
 class GetAllRecipes(APIView):
-    permission_classes=()
+    
     def get(self, request):
         recipes = Recipe.objects.all()
 
@@ -43,7 +43,7 @@ class GetAllRecipes(APIView):
         }, status=status.HTTP_200_OK)
 
 class GetRecipeDetail(APIView):
-    permission_classes=()
+    
 
     def get(self, request, id):
         recipe = Recipe.objects.get(id=id)
@@ -55,7 +55,7 @@ class GetRecipeDetail(APIView):
         })
 
 class SaveRecipe(APIView):
-    permission_classes=()
+    
     def post(self, request):
         data = SaveRecipeSerializer(data=request.data)
         data.is_valid(raise_exception=True)
@@ -76,7 +76,7 @@ class SaveRecipe(APIView):
         })
 
 class GetSavedRecipes(APIView):
-    permission_classes=()
+    
 
     def get(self, request, email):
         user = User.objects.get(email=email)
@@ -91,7 +91,7 @@ class GetSavedRecipes(APIView):
 
 
 class RemoveSavedRecipe(APIView):
-    permission_classes=()
+    
 
     def post(self, request, id):
         sr = SavedRecipe.objects.get(id=id)
@@ -103,7 +103,7 @@ class RemoveSavedRecipe(APIView):
         })
 
 class AddReview(APIView):
-    permission_classes=()
+    
 
     def post(self, request):
         data = AddReviewSerializer(request.data).data
@@ -124,7 +124,7 @@ class AddReview(APIView):
 
 
 class RateRecipe(APIView):
-    permission_classes=()
+    
 
     def post(self, request):
         data = request.data
@@ -161,7 +161,7 @@ class RateRecipe(APIView):
 
 
 class AddChefTips(APIView):
-    permission_classes=()
+    
 
     def post(self, request):
         data = AddTipSerializer(request.data).data

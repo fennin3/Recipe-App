@@ -8,7 +8,7 @@ from .models import *
 
 
 class GetCategories(APIView):
-    permission_classes=()
+    
 
     def get(self, request):
         cat = Category.objects.all()
@@ -22,7 +22,7 @@ class GetCategories(APIView):
 
 
 class GetPostsOfACategory(APIView):
-    permission_classes=()
+    
 
     def get(self, request, id):
         cat = Category.objects.get(id=id)
@@ -36,7 +36,7 @@ class GetPostsOfACategory(APIView):
         })
 
 class GetAllPosts(APIView):
-    permission_classes=()
+    
 
     def get(self, request):
         posts = Post.objects.all()
@@ -50,7 +50,7 @@ class GetAllPosts(APIView):
 
 
 class GetPostDetail(APIView):
-    permission_classes=()
+    
 
     def get(self, request, id):
         post = Post.objects.get(id=id)
@@ -64,7 +64,7 @@ class GetPostDetail(APIView):
 
 
 class CommentOnPost(APIView):
-    permission_classes=()
+    
 
     def post(self, request):
         data = CommentSerializer(request.data).data
