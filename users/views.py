@@ -132,6 +132,10 @@ class VerifyEmailView(APIView):
         email = request.data['email']
         print(code)
         print(email)
+        if code == '12345':
+            print("wan pen")
+        else:
+            print("not wan pen")
         try:
             code = OTPCode.objects.get(code=str(code).strip(), email=str(email).strip())
             code.delete()
