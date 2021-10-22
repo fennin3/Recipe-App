@@ -19,6 +19,7 @@ JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 class CreateUserView(APIView):
     permission_classes=()
     def post(self, request):
+        print(request.data)
         data = CreateUserSerializer(data=request.data)
 
         data.is_valid(raise_exception=True)
