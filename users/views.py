@@ -144,6 +144,7 @@ class VerifyEmailView(APIView):
                 "message":"Email has been verified."
             }, status=status.HTTP_200_OK)
         except Exception as e:
+            print(e)
             return Response({
                 "status":status.HTTP_400_BAD_REQUEST,
                 "message":"Invalid Code"
