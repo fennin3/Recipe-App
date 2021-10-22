@@ -42,20 +42,10 @@ class CreateUserView(APIView):
                 email = email,
                 full_name=data.data['full_name'],
                 profile_pic = data.data['profile_pic'],
-                phone = data.data['phone'],
-                notifications = data.data['notifications'],
-                email_news = data.data['email_news'],
-                special_offers = data.data['special_offers'],
-                
+                phone = data.data['phone'],                
                 is_active=False
             )
-
             user.set_password(data.data['password'])
-
-            
-        
-         
-            
             otp = OTPCode.objects.create(code=code, email=email)
             otp.save()
             user.save()
