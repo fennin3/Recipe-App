@@ -130,7 +130,7 @@ class VerifyEmailView(APIView):
     def post(self, request):
         code = request.data['code']
         email = request.data['email']
-
+        print(code)
         try:
             code = OTPCode.objects.get(code=code, email=email)
             code.delete()
