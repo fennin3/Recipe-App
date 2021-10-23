@@ -115,14 +115,28 @@ class UserLoginView(APIView):
         if user_.email_verified:
             return Response(response, status=status_code)
         else:
-            return Response(
-                {
-                    "status":status.HTTP_400_BAD_REQUEST,
-                    "message":"You have to verify your account.",
-                    "email_verified":user_.email_verified,
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            try:
+                code = generate_OTP()
+                sending_mail(f"Your email verification code is {code}", "Email Verification", email)
+                otp = OTPCode.objects.create(code=code, email=email)
+                otp.save()
+
+                return Response(
+                    {
+                        "status":status.HTTP_400_BAD_REQUEST,
+                        "message":"You have to verify your account.",
+                        "email_verified":user_.email_verified,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            except Exception as e:
+                return Response(
+                    {
+                        "status":status.HTTP_400_BAD_REQUEST,
+                        "message":"Sorry, something went wrong try again.",
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
 class VerifyEmailView(APIView):
     permission_classes=()
