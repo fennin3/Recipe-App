@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import CreateUserSerializer, LanguageSerializer, UserLoginSerializer
+from .serializers import CreateUserSerializer, LanguageSerializer, UserLoginSerializer, UserSerializer
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework.response import Response
@@ -156,8 +156,6 @@ class VerifyEmailView(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 class SetNotitfications(APIView):
-    permission_classes=()
-
     def put(self, request):
         
         email = request.data['email']
@@ -184,7 +182,6 @@ class SetNotitfications(APIView):
 
 
 class SetLanguage(APIView): 
-    permission_classes=()
 
     def put(self, request):
         email = request.data['email']
@@ -211,3 +208,26 @@ class RetrieveAllLanguages(APIView):
             "status":status.HTTP_200_OK,
             "data":langs.data
         })
+
+class UserDetailView(APIView):
+
+
+    def get(self, request, email):
+        try:
+            user = User.objects.get(email=email)
+            data = UserSerializer(user)
+    
+
+            return Response({
+                "status":status.HTTP_200_OK,
+                "data":data.data
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({
+                "status":status.HTTP_400_BAD_REQUEST,
+                "message":"Sorry, an error occured"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+

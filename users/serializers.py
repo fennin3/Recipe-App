@@ -17,10 +17,9 @@ class AdditionalInfoSerializer(serializers.ModelSerializer):
         fields="__all__"
 
 class UserSerializer(serializers.ModelSerializer):
-    more_info = AdditionalInfoSerializer(read_only=True)
     class Meta:
         model=User
-        fields=['id','email','full_name','profile_pic','phone','language','points','notifications','email_news','special_offers', 'more_info']
+        fields=['id','email','full_name','profile_pic','phone','language','points','notifications','email_news','special_offers']
 
 
 class AddressSerializer(serializers.ModelSerializer):

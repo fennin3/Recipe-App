@@ -8,7 +8,6 @@ from rest_framework import status
 
 class AddtoCart(APIView):
     
-
     def post(self, request):
         data = OrderItemSerializer(request.data).data
         user = User.objects.get(email=data['email'])
@@ -80,8 +79,6 @@ class AddtoCart(APIView):
                     })
 
 class RemoveFromCart(APIView):
-    
-
     def post(self, request, id):
         item = OrderItem.objects.get(id=id)
         if int(item.quantity) > 1:
@@ -101,7 +98,6 @@ class RemoveFromCart(APIView):
 
 class RemoveItemDirect(APIView):
     
-
     def post(self, request, id):
         item = OrderItem.objects.get(id=id)
 

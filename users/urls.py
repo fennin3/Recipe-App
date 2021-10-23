@@ -7,5 +7,6 @@ urlpatterns = [
     path('verify-email/', views.VerifyEmailView.as_view(),name="verify_email"),
     path("set-notifications/", views.SetNotitfications.as_view(), name="noti"),
     path("set-language/", views.SetLanguage.as_view(), name="lange"),
-    path("retrieve-languages/", views.RetrieveAllLanguages.as_view(), name="all_lang")
+    path("retrieve-languages/", views.RetrieveAllLanguages.as_view(), name="all_lang"),
+    path("user-detail/<email>/", views.UserDetailView.as_view(), name="user_detail"),
 ]
