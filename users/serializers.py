@@ -16,17 +16,19 @@ class AdditionalInfoSerializer(serializers.ModelSerializer):
         model=AdditionalInfo
         fields="__all__"
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=User
-        fields=['id','email','full_name','profile_pic','phone','language','points','notifications','email_news','special_offers']
-
-
 class AddressSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
     class Meta:
         model=Address
         fields="__all__"
+
+class UserSerializer(serializers.ModelSerializer):
+    addresses = AddressSerializer(read_only=True, many=True)
+    class Meta:
+        model=User
+        fields=['id','email','full_name','profile_pic','phone','language','points','notifications','email_news','special_offers', 'addresses']
+
+
+
 
 class PaymentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

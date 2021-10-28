@@ -51,6 +51,7 @@ class Recipe(models.Model):
     vid_instruction = models.FileField(upload_to="video_instructions/", blank=True, null=True)
     text_instruction = models.CharField(max_length=100000, null=True, blank=True)
     date_posted = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    featured = models.BooleanField(default=False)
 
     @property
     def average_rate(self):
@@ -69,10 +70,17 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
-
 class SavedRecipe(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="saved_recipes")
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="recipe_saves")
     date_saved = models.DateTimeField(auto_now_add=True)
+
+class ScheduledRecipe(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="sche_recipes")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sche_recipes_fu")
+    date_to_order = models.CharField(max_length=20)
+    date = models.DateTimeField(auto_now_add=True)
+
+
     
     

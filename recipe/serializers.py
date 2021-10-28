@@ -67,18 +67,26 @@ class AddReviewSerializer(serializers.Serializer):
     email = serializers.EmailField()
     recipe_id = serializers.IntegerField()
     text = serializers.CharField()
-
-
-class AddRateSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    recipe_id = serializers.IntegerField()
     rate = serializers.DecimalField(max_digits=3, decimal_places=2)
+
+
 
 class AddTipSerializer(serializers.Serializer):
     email = serializers.EmailField()
     recipe_id = serializers.IntegerField()
     text = serializers.CharField()
 
+class ScheduleRecipeSerializer(serializers.Serializer):
+    recipe_id = serializers.IntegerField()
+    user_email = serializers.EmailField()
+    date=serializers.CharField()
+
+
+class ListSchedRecipesSerializer(serializers.ModelSerializer):
+    recipe = RecipeSerializer(read_only=True)
+    class Meta:
+        model=ScheduledRecipe
+        fields="__all__"
 
 
 

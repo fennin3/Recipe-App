@@ -1,10 +1,12 @@
-import recipe
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+import recipe
 from .models import *
 from .serializers import *
 from rest_framework import status
+import random
 
 
 
@@ -43,7 +45,6 @@ class GetAllRecipes(APIView):
         }, status=status.HTTP_200_OK)
 
 class GetRecipeDetail(APIView):
-    
 
     def get(self, request, id):
         recipe = Recipe.objects.get(id=id)
@@ -103,8 +104,6 @@ class RemoveSavedRecipe(APIView):
         })
 
 class AddReview(APIView):
-    
-
     def post(self, request):
         data = AddReviewSerializer(request.data).data
 
@@ -117,14 +116,30 @@ class AddReview(APIView):
         recipe.reviews.add(review)
         recipe.save()
 
+        if user in recipe.raters.all():
+            rating = recipe.all_ratings.get(user__id=user.id)
+            print()
+            rating.rate = data['rate']
+            rating.save()
+        
+        else:
+            # print(float(data['rate']))
+            rating = Rating.objects.create(user=user,rate=float(data['rate'])) 
+            rating.save()
+
+            recipe.all_ratings.add(rating)
+            recipe.raters.add(user)
+            recipe.raters_ids.add(user.id)
+
+            recipe.save()
+
         return Response({
             "status":status.HTTP_200_OK,
-            "message":"Review has been added successfully."
+            "message":"Thank you for your feedback"
         })
 
 
 class RateRecipe(APIView):
-    
 
     def post(self, request):
         data = request.data
@@ -143,6 +158,7 @@ class RateRecipe(APIView):
                 "message":"Thank you for rating this recipe."
             })
         
+        
         else:
             # print(float(data['rate']))
             rating = Rating.objects.create(user=user,rate=float(data['rate'])) 
@@ -157,7 +173,6 @@ class RateRecipe(APIView):
                 "status":status.HTTP_200_OK,
                 "message":"Thank you for rating this recipe."
             })
-
 
 
 class AddChefTips(APIView):
@@ -185,3 +200,80 @@ class AddChefTips(APIView):
             "status":status.HTTP_200_OK,
             "message":"Thank you for the tip."
         })
+
+class GetFeaturedRecipes(APIView):
+    def get(self, request):
+        recipes = Recipe.objects.filter(featured=True)
+
+        recipes = RecipeSerializer(recipes, many=True)
+
+        return Response({
+            "status":status.HTTP_200_OK,
+            "data":recipes.data
+        }, status=status.HTTP_200_OK)
+
+
+class GetRecommendedRecipes(APIView):
+    def get(self, request, email):
+        recipes = Recipe.objects.all()
+        random.shuffle(recipes)
+        recipes = RecipeSerializer(recipes, many=True)
+
+        return Response({
+            "status":status.HTTP_200_OK,
+            "data":recipes.data
+        }, status=status.HTTP_200_OK)
+
+
+class GetscheduledRecipes(APIView):
+    def get(self, request, email):
+        try:
+            user = User.objects.get(email=email)
+            recipes = ScheduledRecipe.objects.filter(user=user)
+            recipes = ListSchedRecipesSerializer(recipes, many=True)
+
+            return Response({
+                "status":status.HTTP_200_OK,
+                "data":recipes.data
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({
+                "status":status.HTTP_400_BAD_REQUEST,
+                "message":"Sorry, something went wrong"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+class CreateScheduledRecipe(APIView):
+    def post(self, request):
+        
+        try:
+            data = ScheduleRecipeSerializer(data=request.data)
+            data.is_valid(raise_exception=True)
+
+            data = data.data
+
+            user = User.objects.get(email=data['user_email'])
+            recipe = Recipe.objects.get(id=data['recipe_id'])
+            date = data['date']
+
+            obj = ScheduledRecipe.objects.create(
+                user=user,
+                recipe=recipe,
+                date_to_order=date
+            )
+            obj.save()
+            return Response(
+                {
+                    "status":status.HTTP_200_OK,
+                    "message":"Successful"
+                },
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            print(e)
+            return Response(
+                {
+                    "status":status.HTTP_400_BAD_REQUEST,
+                    "message":"Unsuccessful"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
