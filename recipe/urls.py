@@ -15,7 +15,8 @@ urlpatterns = [
     path("add-recipe-tip/", views.AddChefTips.as_view(), name="add_tip"),
     path("get-recommended-recipes/<email>/", views.GetRecommendedRecipes.as_view(), name="recommended"),
     path("get-scheduled-recipes/<email>/", views.GetscheduledRecipes.as_view(), name="sched_rec"),
-    path("schedule-recipe/", views.CreateScheduledRecipe.as_view(), name="sch_r")
-
+    path("schedule-recipe/", views.CreateScheduledRecipe.as_view(), name="sch_r"),
+    path("events/", views.ListAllEvent.as_view(), name="all_event"),
+    path("event-recipe/<id>/", views.EventRecipesView.as_view(), name="event_recipe"),
     
 ]

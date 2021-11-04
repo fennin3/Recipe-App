@@ -99,8 +99,8 @@ class RemoveFromCart(APIView):
 
 class RemoveItemDirect(APIView):
     
-    def post(self, request, id):
-        item = OrderItem.objects.get(id=id)
+    def post(self, request, email):
+        item = OrderItem.objects.get(email=email)
 
         item.delete()
 
@@ -109,8 +109,32 @@ class RemoveItemDirect(APIView):
                         "message":"Item Removed"
                     })  
 
-# class GetCartItems(APIView):
+class GetCartItems(APIView):
+    permission_classes=()
+    def get(self, request, email):
+        user = User.objects.get(email=email)
 
-#     def get(self, request, id):
-#         user = 
+        order = Order.objects.filter(user=user, ordered=False)
+
+        if order.exists():
+            order = order.first()
+            items = order.items.all()
+            items = OrderItemSerializerList(items, many=True)
+
+            return Response(
+                {
+                    "status":status.HTTP_200_OK,
+                    "data":items.data
+                },
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {
+                    "status":status.HTTP_200_OK,
+                    "data":[]
+                },
+                status=status.HTTP_200_OK
+            )
+
 

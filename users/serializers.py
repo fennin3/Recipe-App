@@ -19,7 +19,7 @@ class AdditionalInfoSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model=Address
-        fields="__all__"
+        exclude=['user']
 
 class UserSerializer(serializers.ModelSerializer):
     addresses = AddressSerializer(read_only=True, many=True)
@@ -27,11 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
         model=User
         fields=['id','email','full_name','profile_pic','phone','language','points','notifications','email_news','special_offers', 'addresses']
 
-
-
-
 class PaymentSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
     class Meta:
         model=PaymentMethods
         fields="__all__"
@@ -90,3 +86,14 @@ class LanguageSerializer(serializers.ModelSerializer):
     #         'token': jwt_token
     #     }
 
+
+class AddAddress(serializers.Serializer):
+    email = serializers.EmailField()
+    type = serializers.CharField()
+    momo_name = serializers.CharField()
+    momo_number=serializers.CharField()
+    holder_name=serializers.CharField()
+    card_number=serializers.CharField()
+    exp_month = serializers.IntegerField()
+    exp_year = serializers.IntegerField()
+    

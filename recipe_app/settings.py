@@ -34,7 +34,6 @@ ALLOWED_HOSTS = ["resipe.herokuapp.com", "localhost", "www.resipe.herokuapp.com"
 # Application definition
 
 INSTALLED_APPS = [
-    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,12 +44,11 @@ INSTALLED_APPS = [
     'recipe',
     'glocery',
     'community',
-    'cart'
+    'cart',
+    'users.apps.UsersConfig',
     
 ]
 
-
-AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -127,6 +125,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'users.CustomUser'
+
+
 
 
 JWT_AUTH = {
@@ -162,7 +163,6 @@ JWT_AUTH = {
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
          'rest_framework.permissions.IsAuthenticated',
-         'rest_framework.permissions.IsAdminUser',
          ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [

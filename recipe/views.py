@@ -33,7 +33,6 @@ class GetCategoryRecipes(APIView):
         }, status=status.HTTP_200_OK)
 
 class GetAllRecipes(APIView):
-    
     def get(self, request):
         recipes = Recipe.objects.all()
 
@@ -277,3 +276,41 @@ class CreateScheduledRecipe(APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+class ListAllEvent(APIView):
+    
+    def get(self, request):
+        events = Event.objects.all()
+
+        events = ListEventSerializer(events, many=True)
+
+        return Response(
+            {
+                "status":status.HTTP_200_OK,
+                "data":events.data
+            },
+            status=status.HTTP_200_OK
+        )
+
+class EventRecipesView(APIView):
+
+    def get(self, request, id):
+        try:
+            event = Event.objects.get(id=id)
+            event = ListEventSerializer(event)
+            return Response(
+                {
+                    "status":status.HTTP_200_OK,
+                    "data":event.data
+                },
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response(
+                {
+                    "status":status.HTTP_400_BAD_REQUEST,
+                    "message":"Sorry, something went wrong"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
