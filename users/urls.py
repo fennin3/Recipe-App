@@ -15,5 +15,6 @@ urlpatterns = [
     path("get-addresses/<email>/", views.RetrieveAddresses.as_view(), name="get_adds"),
     path("add-payment/", views.AddPaymentMethods.as_view(), name="add_pay"),
     path("add-address/", views.AddAddress.as_view(), name="add_adds"),
+    path("all-regions/", views.RetrieveAllRegions.as_view(), name="all_regs"),
 ]
 

@@ -16,7 +16,30 @@ class AdditionalInfoSerializer(serializers.ModelSerializer):
         model=AdditionalInfo
         fields="__all__"
 
+class AreaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Area
+        fields="__all__"
+
+class CitySerializer(serializers.ModelSerializer):
+    areas = AreaSerializer(read_only=True, many=True)
+    class Meta:
+        model=City
+        fields="__all__"
+
+class RegionSerializer(serializers.ModelSerializer):
+    cities = CitySerializer(read_only=True, many=True)
+    class Meta:
+        model=Region
+        fields="__all__"
+
+
+
 class AddressSerializer(serializers.ModelSerializer):
+    area=AreaSerializer(read_only=True)
+    city=CitySerializer(read_only=True)
+    region=RegionSerializer(read_only=True)
+
     class Meta:
         model=Address
         exclude=['user']
@@ -87,13 +110,5 @@ class LanguageSerializer(serializers.ModelSerializer):
     #     }
 
 
-class AddAddress(serializers.Serializer):
-    email = serializers.EmailField()
-    type = serializers.CharField()
-    momo_name = serializers.CharField()
-    momo_number=serializers.CharField()
-    holder_name=serializers.CharField()
-    card_number=serializers.CharField()
-    exp_month = serializers.IntegerField()
-    exp_year = serializers.IntegerField()
+
     

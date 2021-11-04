@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from .serializers import AddressSerializer, CreateUserSerializer, LanguageSerializer, PaymentSerializer, UserLoginSerializer, UserSerializer
+from .serializers import AddressSerializer, CreateUserSerializer, LanguageSerializer, PaymentSerializer, RegionSerializer, UserLoginSerializer, UserSerializer
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework.response import Response
 from rest_framework import status
 from .utils import sending_mail, generate_OTP
-from .models import Address, OTPCode, Language, PaymentMethods
+from .models import Address, OTPCode, Language, PaymentMethods, Region, Area, City
 
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import update_last_login
@@ -450,6 +450,7 @@ class AddAddress(APIView):
         reci_num = request.data.get('recipient_phone', None)
         address = request.data.get('address', None)
         area = request.data.get('area', None)
+        region = request.data.get('region', None)
         city = request.data.get('city', None)
         defaul = request.data.get('default', None)
         # instruction = request.data.get('instruction', None)
@@ -491,15 +492,19 @@ class AddAddress(APIView):
                 add.default =False
                 add.save()
 
+        city = City.objects.get(id=city)
+        area = Area.objects.get(id=area)
+        region = Region.objects.get(id=region)
+
         adds = Address.objects.create(
             user=user,
             name=name,
             recipient_name=reci_name,
             recipient_phone=reci_num,
             address=address,
+            region=region,
             area=area,
             city=city,
-            # instruction=instruction,
             default=defaul
         )
 
@@ -512,4 +517,15 @@ class AddAddress(APIView):
                 }, status=status.HTTP_200_OK
             )
 
+class RetrieveAllRegions(APIView):
+    def get(self, request):
+        regs = Region.objects.all()
+        regs = RegionSerializer(regs, many=True)
+
+        return Response(
+            {
+                "status":status.HTTP_200_OK,
+                "data":regs.data
+            }, status=status.HTTP_200_OK
+        )
 

@@ -15,4 +15,7 @@ admin.site.register(PreOrderingCalender)
 admin.site.register(CustomUser)
 admin.site.register(Language)
 admin.site.register(OTPCode)
+admin.site.register(Region)
+admin.site.register(City)
+admin.site.register(Area)
 

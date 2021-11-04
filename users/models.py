@@ -24,16 +24,39 @@ class CustomUser(AbstractUser):
     email_verified = models.BooleanField(default=False)
     REQUIRED_FIELDS = []
 
+
+class Region(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+    
+
+class City(models.Model):
+    name = models.CharField(max_length=100)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="cities")
+
+    def __str__(self):
+        return self.name
+
+class Area(models.Model):
+    name=models.CharField(max_length=100)
+    fee = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name="areas")
+
+    def __str__(self):
+        return self.name
+    
+
 class Address(models.Model):
     user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE, related_name="addresses")
     name = models.CharField(max_length=500)
     recipient_name = models.CharField(max_length=500)
     recipient_phone = models.CharField(max_length=16)
     address = models.CharField(max_length=1000)
-    region=models.CharField(max_length=200)
-    area = models.CharField(max_length=500)
-    city = models.CharField(max_length=500)
-    # instruction = models.CharField(max_length=10000)
+    region=models.ForeignKey(Region, on_delete=models.CASCADE, related_name="reg_adds")
+    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name="city_adds")
+    area = models.ForeignKey(Area, on_delete=models.CASCADE,related_name="area_adds")
     default = models.BooleanField(default=False)
     date_added = models.DateTimeField(auto_now_add=True)
 
