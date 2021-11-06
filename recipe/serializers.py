@@ -65,6 +65,11 @@ class EventSerializer(serializers.ModelSerializer):
         model=Event
         fields='__all__'
 
+class InstructionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Instruction
+        exclude=['recipe']
+
 
 class RecipeSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
@@ -75,7 +80,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     avg_rate = serializers.ReadOnlyField(source='average_rate')
     nutri_details = NutriDetailSerializer(read_only=True, many=True)
     event = EventSerializer(read_only=True)
-
+    instructions = InstructionSerializer(read_only=True, many=True)
     class Meta:
         model=Recipe
         fields="__all__"

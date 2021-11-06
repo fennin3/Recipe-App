@@ -99,6 +99,11 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
+class Instruction(models.Model):
+    type = models.CharField(max_length=50)
+    text = models.CharField(max_length=100000)
+    file = models.FileField(upload_to="images/instructions_images/")
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="instructions")
 
 class NutritionalFact(models.Model):
     text = models.CharField(max_length=500)
